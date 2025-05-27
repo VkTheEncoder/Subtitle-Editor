@@ -8,30 +8,26 @@ from dotenv import load_dotenv
 import pysubs2
 
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, MessageHandler, filters
+from telegram.ext import Dispatcher, MessageHandler, Filters
 
 from styles import DefaultStyle
 
-# load .env locally; on Koyeb your REAL env-vars are injected
+# ─── load env ─────────────────────────────────────────────────────
 load_dotenv()
-
 BOT_TOKEN   = os.getenv("BOT_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT        = int(os.getenv("PORT", 8080))
 
 if not BOT_TOKEN or not WEBHOOK_URL:
-    raise RuntimeError("⚠️ BOT_TOKEN and WEBHOOK_URL must be set as environment variables")
+    raise RuntimeError("⚠️ BOT_TOKEN and WEBHOOK_URL must be set in env vars")
 
-# Flask + Telegram setup
+# ─── Flask + Bot setup ────────────────────────────────────────────
 app = Flask(__name__)
-
-# ← here we no longer import or pass Request
 bot = Bot(token=BOT_TOKEN)
-dp  = Dispatcher(bot, None, workers=0)
-
+dp  = Dispatcher(bot, None, workers=0, use_context=True)
 logging.basicConfig(level=logging.INFO)
 
-# set webhook immediately
+# immediately register webhook
 bot.set_webhook(WEBHOOK_URL)
 
 @app.route("/", methods=["GET"])
@@ -46,58 +42,51 @@ def webhook():
     dp.process_update(update)
     return "", 200
 
-def handle_document(update: Update, context=None):
+def handle_document(update, context):
     doc      = update.message.document
     filename = doc.file_name
     ext      = os.path.splitext(filename)[1].lower()
-
     if ext not in (".srt", ".vtt"):
-        return update.message.reply_text("🚫 Send me a .srt or .vtt file, please.")
+        return update.message.reply_text("🚫 Please send a .srt or .vtt file.")
 
     in_path = out_path = None
     try:
-        # download into a unique temp file
+        # 1) download incoming file
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp_in:
             in_path = tmp_in.name
         bot.getFile(doc.file_id).download(custom_path=in_path)
 
-        # load subtitles
+        # 2) load & apply style + resolution
         subs = pysubs2.load(in_path)
-
-        # set video resolution
         subs.info["PlayResX"] = "1920"
         subs.info["PlayResY"] = "1080"
 
-        # register & apply your Default style
         subs.styles["Default"] = DefaultStyle
         for line in subs:
             line.style = "Default"
-
         subs.resolve_overlaps()
 
-        # save to a temp .ass
+        # 3) save to .ass
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ass") as tmp_out:
             out_path = tmp_out.name
         subs.save(out_path)
 
-        # send back the .ass
+        # 4) send it back
         with open(out_path, "rb") as f:
             reply_name = os.path.splitext(filename)[0] + ".ass"
             update.message.reply_document(f, filename=reply_name)
 
     except Exception:
         logging.exception("Conversion failed")
-        update.message.reply_text("❌ Something went wrong. Please try again.")
+        update.message.reply_text("❌ Oops—conversion failed. Try again?")
     finally:
-        # cleanup
         for p in (in_path, out_path):
             if p and os.path.exists(p):
                 try: os.remove(p)
                 except: pass
 
-# register handler for ANY document
-dp.add_handler(MessageHandler(filters.Document.ALL, handle_document))
+# register and run
+dp.add_handler(MessageHandler(Filters.document, handle_document))
 
 if __name__ == "__main__":
-    # for local testing; on Koyeb it’s served by Flask
     app.run(host="0.0.0.0", port=PORT)
