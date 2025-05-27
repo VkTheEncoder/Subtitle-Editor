@@ -1,103 +1,100 @@
+#!/usr/bin/env python3
 import os
 import tempfile
-from flask import Flask, request, Response
-from telegram import Update
-from telegram.ext import (
-    ApplicationBuilder,
-    CommandHandler,
-    MessageHandler,
-    filters,
-    ContextTypes,
-)
+import logging
+
+from flask import Flask, request, abort
+from dotenv import load_dotenv
 import pysubs2
+from telegram import Bot, Update
+from telegram.utils.request import Request
+from telegram.ext import Dispatcher, MessageHandler, Filters
 
-# ─── CONFIG ─────────────────────────────────────────────
-BOT_TOKEN   = os.environ["BOT_TOKEN"]
-# e.g. https://<your-app>.koyeb.app
-BASE_URL    = os.environ["WEBHOOK_URL"].rstrip("/")
-PORT        = int(os.environ.get("PORT", 8080))
-STYLE_NAME  = "TwCEN"
+from styles import DefaultStyle
 
-# Your ASS style parameters, matching your Aegisub screenshot
-YOUR_STYLE = pysubs2.SSAStyle(
-    fontname        = "Tw Cen MT Condensed Extra Bold",
-    fontsize        = 36,
-    primarycolor    = "&H00FFFFFF",  # white
-    secondarycolor  = "&H000000FF",  # red (BGR hex)
-    outlinecolor    = "&H00000000",  # black
-    backcolor       = "&H00000000",  # shadow color
-    bold            = False,
-    italic          = False,
-    underline       = False,
-    strikeout       = False,
-    scale_x         = 112,
-    scale_y         = 75,
-    spacing         = 0,
-    angle           = 0,
-    borderstyle     = 1,
-    outline         = 0,
-    shadow          = 0,
-    alignment       = 5,   # centered bottom
-    margin_l        = 15,
-    margin_r        = 15,
-    margin_v        = 11,
-)
+# load .env locally; on Koyeb your real env-vars are injected automatically
+load_dotenv()
 
-# ─── FLASK SETUP ────────────────────────────────────────
+BOT_TOKEN   = os.getenv("BOT_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+PORT        = int(os.getenv("PORT", 8080))
+
+if not BOT_TOKEN or not WEBHOOK_URL:
+    raise RuntimeError("⚠️ BOT_TOKEN and WEBHOOK_URL must be set as environment variables")
+
+# Flask + Telegram setup
 app = Flask(__name__)
+bot = Bot(token=BOT_TOKEN, request=Request(con_pool_size=8))
+dp  = Dispatcher(bot, None, workers=0)
+logging.basicConfig(level=logging.INFO)
+
+# register webhook immediately (works under any WSGI or __main__)
+bot.set_webhook(WEBHOOK_URL)
 
 @app.route("/", methods=["GET"])
-def index():
-    return "Subtitle-bot is running!"
+def health():
+    return "OK", 200
 
-@app.route(f"/{BOT_TOKEN}", methods=["POST"])
+@app.route("/webhook", methods=["POST"])
 def webhook():
-    """Receive update from Telegram, forward to the dispatcher."""
-    json_data = request.get_json(force=True)
-    update = Update.de_json(json_data, bot_app.bot)
-    bot_app.update_queue.put(update)
-    return Response("OK", status=200)
+    if not request.is_json:
+        abort(400)
+    update = Update.de_json(request.get_json(force=True), bot)
+    dp.process_update(update)
+    return "", 200
 
-# ─── TELEGRAM HANDLERS ──────────────────────────────────
-async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🚀 Send me an .srt or .vtt file, and I'll return a styled .ass for you!"
-    )
+def handle_document(update: Update, context=None):
+    doc      = update.message.document
+    filename = doc.file_name
+    ext      = os.path.splitext(filename)[1].lower()
 
-async def convert_subs(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    doc = update.message.document
-    if not doc or not doc.file_name.lower().endswith((".srt", ".vtt")):
-        return await update.message.reply_text("❌ Please send a .srt or .vtt file.")
+    if ext not in (".srt", ".vtt"):
+        return update.message.reply_text("🚫 Send me a .srt or .vtt file, please.")
 
-    # download the incoming file to a temp dir
-    with tempfile.TemporaryDirectory() as tmp:
-        in_path  = os.path.join(tmp, doc.file_name)
-        out_path = os.path.splitext(in_path)[0] + ".ass"
+    in_path = out_path = None
+    try:
+        # download into a unique temp file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp_in:
+            in_path = tmp_in.name
+        bot.getFile(doc.file_id).download(custom_path=in_path)
 
-        # fetch file from Telegram
-        f = await doc.get_file()
-        await f.download_to_drive(in_path)
-
-        # load, inject style & resolution, save
+        # load subtitles
         subs = pysubs2.load(in_path)
-        subs.styles[STYLE_NAME] = YOUR_STYLE
+
+        # ─── set video resolution ────────────────────────────────
         subs.info["PlayResX"] = "1920"
         subs.info["PlayResY"] = "1080"
+
+        # ─── register & apply your Default style ─────────────────
+        subs.styles["Default"] = DefaultStyle
+        for line in subs:
+            line.style = "Default"
+
+        subs.resolve_overlaps()
+
+        # save out to another temp file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".ass") as tmp_out:
+            out_path = tmp_out.name
         subs.save(out_path)
 
-        # send result back
-        await update.message.reply_document(open(out_path, "rb"))
+        # reply with your styled .ass
+        with open(out_path, "rb") as f:
+            reply_name = os.path.splitext(filename)[0] + ".ass"
+            update.message.reply_document(f, filename=reply_name)
 
-# ─── DISPATCHER INIT & WEBHOOK SETUP ────────────────────
-bot_app = ApplicationBuilder().token(BOT_TOKEN).build()
-bot_app.add_handler(CommandHandler("start", start_cmd))
-bot_app.add_handler(MessageHandler(filters.Document.ALL, convert_subs))
+    except Exception:
+        logging.exception("Conversion failed")
+        update.message.reply_text("❌ Oops—something went wrong. Try again?")
+    finally:
+        # cleanup
+        for p in (in_path, out_path):
+            if p and os.path.exists(p):
+                try: os.remove(p)
+                except: pass
 
-def set_webhook_and_run():
-    webhook_url = f"{BASE_URL}/{BOT_TOKEN}"
-    bot_app.bot.set_webhook(webhook_url)
-    # start Flask
-    app.run(host="0.0.0.0", port=PORT)
+# register the handler
+dp.add_handler(MessageHandler(Filters.document, handle_document))
 
 if __name__ == "__main__":
-    set_webhook_and_run()
+    # for local testing only; on Koyeb it’s served by Flask automatically
+    app.run(host="0.0.0.0", port=PORT)
