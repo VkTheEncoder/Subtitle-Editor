@@ -8,12 +8,11 @@ from dotenv import load_dotenv
 import pysubs2
 
 from telegram import Bot, Update
-from telegram.request import Request                # <-- updated import
-from telegram.ext import Dispatcher, MessageHandler, filters  # <-- use lowercase filters
+from telegram.ext import Dispatcher, MessageHandler, filters
 
 from styles import DefaultStyle
 
-# load local .env; on Koyeb your REAL env-vars are injected
+# load .env locally; on Koyeb your REAL env-vars are injected
 load_dotenv()
 
 BOT_TOKEN   = os.getenv("BOT_TOKEN")
@@ -25,7 +24,9 @@ if not BOT_TOKEN or not WEBHOOK_URL:
 
 # Flask + Telegram setup
 app = Flask(__name__)
-bot = Bot(token=BOT_TOKEN, request=Request(con_pool_size=8))
+
+# ← here we no longer import or pass Request
+bot = Bot(token=BOT_TOKEN)
 dp  = Dispatcher(bot, None, workers=0)
 
 logging.basicConfig(level=logging.INFO)
@@ -98,5 +99,5 @@ def handle_document(update: Update, context=None):
 dp.add_handler(MessageHandler(filters.Document.ALL, handle_document))
 
 if __name__ == "__main__":
-    # for local testing; on Koyeb it's served by Flask
+    # for local testing; on Koyeb it’s served by Flask
     app.run(host="0.0.0.0", port=PORT)
