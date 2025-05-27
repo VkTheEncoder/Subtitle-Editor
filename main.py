@@ -6,13 +6,14 @@ import logging
 from flask import Flask, request, abort
 from dotenv import load_dotenv
 import pysubs2
+
 from telegram import Bot, Update
-from telegram.utils.request import Request
-from telegram.ext import Dispatcher, MessageHandler, Filters
+from telegram.request import Request                # <-- updated import
+from telegram.ext import Dispatcher, MessageHandler, filters  # <-- use lowercase filters
 
 from styles import DefaultStyle
 
-# load .env locally; on Koyeb your real env-vars are injected automatically
+# load local .env; on Koyeb your REAL env-vars are injected
 load_dotenv()
 
 BOT_TOKEN   = os.getenv("BOT_TOKEN")
@@ -26,9 +27,10 @@ if not BOT_TOKEN or not WEBHOOK_URL:
 app = Flask(__name__)
 bot = Bot(token=BOT_TOKEN, request=Request(con_pool_size=8))
 dp  = Dispatcher(bot, None, workers=0)
+
 logging.basicConfig(level=logging.INFO)
 
-# register webhook immediately (works under any WSGI or __main__)
+# set webhook immediately
 bot.set_webhook(WEBHOOK_URL)
 
 @app.route("/", methods=["GET"])
@@ -61,30 +63,30 @@ def handle_document(update: Update, context=None):
         # load subtitles
         subs = pysubs2.load(in_path)
 
-        # ─── set video resolution ────────────────────────────────
+        # set video resolution
         subs.info["PlayResX"] = "1920"
         subs.info["PlayResY"] = "1080"
 
-        # ─── register & apply your Default style ─────────────────
+        # register & apply your Default style
         subs.styles["Default"] = DefaultStyle
         for line in subs:
             line.style = "Default"
 
         subs.resolve_overlaps()
 
-        # save out to another temp file
+        # save to a temp .ass
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ass") as tmp_out:
             out_path = tmp_out.name
         subs.save(out_path)
 
-        # reply with your styled .ass
+        # send back the .ass
         with open(out_path, "rb") as f:
             reply_name = os.path.splitext(filename)[0] + ".ass"
             update.message.reply_document(f, filename=reply_name)
 
     except Exception:
         logging.exception("Conversion failed")
-        update.message.reply_text("❌ Oops—something went wrong. Try again?")
+        update.message.reply_text("❌ Something went wrong. Please try again.")
     finally:
         # cleanup
         for p in (in_path, out_path):
@@ -92,9 +94,9 @@ def handle_document(update: Update, context=None):
                 try: os.remove(p)
                 except: pass
 
-# register the handler
-dp.add_handler(MessageHandler(Filters.document, handle_document))
+# register handler for ANY document
+dp.add_handler(MessageHandler(filters.Document.ALL, handle_document))
 
 if __name__ == "__main__":
-    # for local testing only; on Koyeb it’s served by Flask automatically
+    # for local testing; on Koyeb it's served by Flask
     app.run(host="0.0.0.0", port=PORT)
