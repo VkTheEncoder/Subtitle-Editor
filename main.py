@@ -12,7 +12,7 @@ from telegram.ext import Dispatcher, MessageHandler, Filters
 
 from styles import DefaultStyle
 
-# ─── load env ─────────────────────────────────────────────────────
+# load env; on Koyeb your BOT_TOKEN & WEBHOOK_URL are injected automatically
 load_dotenv()
 BOT_TOKEN   = os.getenv("BOT_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
@@ -21,13 +21,13 @@ PORT        = int(os.getenv("PORT", 8080))
 if not BOT_TOKEN or not WEBHOOK_URL:
     raise RuntimeError("⚠️ BOT_TOKEN and WEBHOOK_URL must be set in env vars")
 
-# ─── Flask + Bot setup ────────────────────────────────────────────
+# Flask + Bot setup
 app = Flask(__name__)
 bot = Bot(token=BOT_TOKEN)
 dp  = Dispatcher(bot, None, workers=0, use_context=True)
 logging.basicConfig(level=logging.INFO)
 
-# immediately register webhook
+# register webhook immediately
 bot.set_webhook(WEBHOOK_URL)
 
 @app.route("/", methods=["GET"])
@@ -52,27 +52,31 @@ def handle_document(update, context):
 
     in_path = out_path = None
     try:
-        # 1) Download to temp
+        # download into temp file
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp_in:
             in_path = tmp_in.name
         bot.getFile(doc.file_id).download(custom_path=in_path)
 
-        # 2) Load & style + set 1920×1080
+        # load subtitles
         subs = pysubs2.load(in_path)
+
+        # set video resolution
         subs.info["PlayResX"] = "1920"
         subs.info["PlayResY"] = "1080"
 
+        # apply your Default style to every line
         subs.styles["Default"] = DefaultStyle
         for line in subs:
             line.style = "Default"
-        subs.resolve_overlaps()
 
-        # 3) Save out
+        # **Removed** subs.resolve_overlaps()
+
+        # save to .ass
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ass") as tmp_out:
             out_path = tmp_out.name
         subs.save(out_path)
 
-        # 4) Reply
+        # send back
         with open(out_path, "rb") as f:
             reply_name = os.path.splitext(filename)[0] + ".ass"
             update.message.reply_document(f, filename=reply_name)
@@ -81,12 +85,12 @@ def handle_document(update, context):
         logging.exception("Conversion failed")
         update.message.reply_text("❌ Conversion error—please try again.")
     finally:
+        # cleanup
         for p in (in_path, out_path):
             if p and os.path.exists(p):
                 try: os.remove(p)
                 except: pass
 
-# register handler
 dp.add_handler(MessageHandler(Filters.document, handle_document))
 
 if __name__ == "__main__":
