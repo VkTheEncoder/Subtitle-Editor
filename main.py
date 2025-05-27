@@ -66,8 +66,10 @@ def handle_document(update, context):
 
         # apply your Default style to every line
         subs.styles["Default"] = DefaultStyle
+        shadow_alpha_tag = "{\\4a&H96&}"
         for line in subs:
             line.style = "Default"
+            line.text = shadow_alpha_tag + line.text
 
         # **Removed** subs.resolve_overlaps()
 
