@@ -46,3 +46,35 @@ DefaultStyle.marginv     = 65
 DefaultStyle.encoding    = 1    # 1 = ANSI
 
 # (Everything else inherits pysubs2’s defaults.)
+
+# — new “site” style based on your TwCEN screenshot —
+SiteStyle = pysubs2.SSAStyle()
+
+SiteStyle.fontname        = "Tw Cen MT Condensed Extra Bold"
+SiteStyle.fontsize        = 36
+SiteStyle.primarycolour   = "&H00FFFFFF"   # white fill
+SiteStyle.secondarycolour = "&H000000FF"   # red outline
+SiteStyle.outlinecolour   = "&H00000000"   # black border
+SiteStyle.backcolour      = "&H00000000"   # black shadow (we'll use override alpha)
+
+SiteStyle.bold       = False
+SiteStyle.italic     = False
+SiteStyle.underline  = False
+SiteStyle.strikeout  = False
+
+SiteStyle.outline    = 0.0
+SiteStyle.shadow     = 0.0
+
+SiteStyle.scalex     = 112
+SiteStyle.scaley     = 75
+SiteStyle.spacing    = 0.0
+SiteStyle.angle      = 0.0
+
+SiteStyle.border_style = 1       # outline + drop-shadow
+SiteStyle.alignment    = 5       # bottom-center
+
+SiteStyle.marginl    = 15
+SiteStyle.marginr    = 15
+SiteStyle.marginv    = 11
+
+SiteStyle.encoding   = 1        # ANSI
