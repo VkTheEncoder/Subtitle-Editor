@@ -10,16 +10,16 @@ import pysubs2
 from telegram import Bot, Update
 from telegram.ext import Dispatcher, MessageHandler, Filters
 
-from styles import DefaultStyle
+from styles import DefaultStyle, SiteStyle
 
-# load env; on Koyeb your BOT_TOKEN & WEBHOOK_URL are injected automatically
+# Load env – Koyeb injects BOT_TOKEN & WEBHOOK_URL
 load_dotenv()
 BOT_TOKEN   = os.getenv("BOT_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT        = int(os.getenv("PORT", 8080))
 
 if not BOT_TOKEN or not WEBHOOK_URL:
-    raise RuntimeError("⚠️ BOT_TOKEN and WEBHOOK_URL must be set in env vars")
+    raise RuntimeError("BOT_TOKEN & WEBHOOK_URL must be set as env vars")
 
 # Flask + Bot setup
 app = Flask(__name__)
@@ -27,7 +27,7 @@ bot = Bot(token=BOT_TOKEN)
 dp  = Dispatcher(bot, None, workers=0, use_context=True)
 logging.basicConfig(level=logging.INFO)
 
-# register webhook immediately
+# Register webhook
 bot.set_webhook(WEBHOOK_URL)
 
 @app.route("/", methods=["GET"])
@@ -38,8 +38,8 @@ def health():
 def webhook():
     if not request.is_json:
         abort(400)
-    update = Update.de_json(request.get_json(force=True), bot)
-    dp.process_update(update)
+    upd = Update.de_json(request.get_json(force=True), bot)
+    dp.process_update(upd)
     return "", 200
 
 def handle_document(update, context):
@@ -52,33 +52,47 @@ def handle_document(update, context):
 
     in_path = out_path = None
     try:
-        # download into temp file
+        # Download
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp_in:
             in_path = tmp_in.name
         bot.getFile(doc.file_id).download(custom_path=in_path)
 
-        # load subtitles
+        # Load
         subs = pysubs2.load(in_path)
 
-        # set video resolution
+        # Set resolution
         subs.info["PlayResX"] = "1920"
         subs.info["PlayResY"] = "1080"
 
-        # apply your Default style to every line
+        # Register styles
         subs.styles["Default"] = DefaultStyle
-        shadow_alpha_tag = "{\\4a&H96&}"
-        for line in subs:
+        subs.styles["site"]    = SiteStyle
+
+        # 1) Prepend your “site” event from 0 → 5 min
+        site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
+        # start/end in milliseconds:
+        start_ms = 0
+        end_ms   = 5 * 60 * 1000
+        site_event = pysubs2.SSAEvent(
+            start=start_ms,
+            end=end_ms,
+            style="site",
+            text=site_tag + "HindiSubbing.com"
+        )
+        subs.events.insert(0, site_event)
+
+        # 2) Apply Default to all existing lines + semi-transparent shadow override
+        alpha_tag = r"{\4a&H96&}"
+        for line in subs.events[1:]:  # skip the first site_event
             line.style = "Default"
-            line.text = shadow_alpha_tag + line.text
+            line.text  = alpha_tag + line.text
 
-        # **Removed** subs.resolve_overlaps()
-
-        # save to .ass
+        # Save out
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ass") as tmp_out:
             out_path = tmp_out.name
         subs.save(out_path)
 
-        # send back
+        # Reply
         with open(out_path, "rb") as f:
             reply_name = os.path.splitext(filename)[0] + ".ass"
             update.message.reply_document(f, filename=reply_name)
@@ -87,7 +101,6 @@ def handle_document(update, context):
         logging.exception("Conversion failed")
         update.message.reply_text("❌ Conversion error—please try again.")
     finally:
-        # cleanup
         for p in (in_path, out_path):
             if p and os.path.exists(p):
                 try: os.remove(p)
