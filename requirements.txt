@@ -2,4 +2,3 @@ Flask==2.3.2
 python-telegram-bot==20.3
 pysubs2==1.8.0
 python-dotenv==1.0.0
-python-dotenv
