@@ -1,14 +1,13 @@
 import pysubs2
 
-# “Default” style matching your Aegisub screenshot
 DefaultStyle = pysubs2.SSAStyle(
     Name="Default",
     Fontname="HelveticaRounded LT Std BdCn",
     Fontsize=78,
-    PrimaryColour="&H00FFFFFF",    # white
-    SecondaryColour="&H000000FF",  # red
-    OutlineColour="&H00000000",    # black
-    BackColour="&H00000000",       # black (shadow)
+    PrimaryColour="&H00FFFFFF",
+    SecondaryColour="&H000000FF",
+    OutlineColour="&H00000000",
+    BackColour="&H00000000",
     Bold=False,
     Italic=False,
     Underline=False,
@@ -19,8 +18,8 @@ DefaultStyle = pysubs2.SSAStyle(
     ScaleY=100,
     Spacing=0.0,
     Angle=0.0,
-    BorderStyle=1,                 # outline+shadow
-    Alignment=2,                   # bottom-center
+    BorderStyle=1,
+    Alignment=2,
     MarginL=60,
     MarginR=60,
     MarginV=65,
