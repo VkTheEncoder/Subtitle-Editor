@@ -12,7 +12,7 @@ from telegram.ext import (
 import pysubs2
 
 # ─── CONFIG ─────────────────────────────────────────────
-BOT_TOKEN   = os.environ["7583290113:AAG2011oMRJ7AJodLatTvS1MUqdETgWuFlQ"]
+BOT_TOKEN   = os.environ["BOT_TOKEN"]
 # e.g. https://<your-app>.koyeb.app
 BASE_URL    = os.environ["WEBHOOK_URL"].rstrip("/")
 PORT        = int(os.environ.get("PORT", 8080))
