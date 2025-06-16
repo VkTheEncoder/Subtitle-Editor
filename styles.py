@@ -117,39 +117,7 @@ ShroudingTheHeavens.marginv         = 125
 # Encoding
 ShroudingTheHeavens.encoding        = 1     # ANSI
 
-FackyStyle = pysubs2.SSAStyle()
-
-FackyStyle.name            = "facky"
-FackyStyle.fontname        = "Tw Cen MT Condensed Extra Bold"
-FackyStyle.fontsize        = 36
-FackyStyle.primarycolour   = "&H00FFFFFF"   # white fill
-FackyStyle.secondarycolour = "&H000000FF"   # red outline
-FackyStyle.outlinecolour   = "&H00000000"   # black border
-FackyStyle.backcolour      = "&H00000000"   # black shadow
-
-FackyStyle.bold       = False
-FackyStyle.italic     = False
-FackyStyle.underline  = False
-FackyStyle.strikeout  = False
-
-FackyStyle.outline    = 0.0
-FackyStyle.shadow     = 0.0
-
-FackyStyle.scalex     = 112
-FackyStyle.scaley     = 75
-FackyStyle.spacing    = 0.0
-FackyStyle.angle      = 0.0
-
-FackyStyle.border_style = 1       # outline + drop-shadow
-FackyStyle.alignment    = 5       # bottom-center
-
-FackyStyle.marginl    = 15
-FackyStyle.marginr    = 15
-FackyStyle.marginv    = 11
-
-FackyStyle.encoding   = 1        # ANSI
-
 STYLES = {
     "Pikasub":               [DefaultStyle, SiteStyle],
-    "Shrouding The Heavens": [ShroudingTheHeavens, FackyStyle],
+    "Shrouding The Heavens": [ShroudingTheHeavens],
 }
