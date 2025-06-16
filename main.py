@@ -3,11 +3,12 @@ import os
 import tempfile
 import logging
 
-from dotenv import load_dotenv
-load_dotenv()
+
 
 from flask import Flask, request, abort
 from dotenv import load_dotenv
+load_dotenv()
+
 import pysubs2
 
 from telegram import Bot, Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -23,8 +24,8 @@ from styles import STYLES  # <-- pull in your theme registry
 
 # Load env – Koyeb injects BOT_TOKEN & WEBHOOK_URL
 load_dotenv()
-BOT_TOKEN   = os.getenv("BOT_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+BOT_TOKEN   = os.environ.get("BOT_TOKEN")
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
 PORT        = int(os.getenv("PORT", 8080))
 
 if not BOT_TOKEN or not WEBHOOK_URL:
