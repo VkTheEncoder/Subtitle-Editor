@@ -7,7 +7,6 @@ import logging
 
 from flask import Flask, request, abort
 from dotenv import load_dotenv
-load_dotenv()
 
 import pysubs2
 
