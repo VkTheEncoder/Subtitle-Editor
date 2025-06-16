@@ -133,7 +133,7 @@ def handle_document(update, context):
             site_event = pysubs2.SSAEvent(
                 start=start_ms,
                 end=end_ms,
-                style="site",
+                style="facky",
                 text=site_tag + "fackyhindidonghua.in"
             )
             subs.events.insert(0, site_event)
