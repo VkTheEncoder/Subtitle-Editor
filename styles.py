@@ -114,3 +114,8 @@ ShroudingTheHeavens.marginv         = 125
 
 # Encoding
 ShroudingTheHeavens.encoding        = 1     # ANSI
+
+STYLES = {
+    "Pikasub":               [DefaultStyle, SiteStyle],
+    "Shrouding The Heavens": [ShroudingTheHeavens],
+}
