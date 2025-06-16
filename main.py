@@ -129,8 +129,26 @@ def handle_document(update, context):
                 line.style = "Default"
                 line.text  = alpha_tag + line.text
 
+        elif theme == "Shrouding The heavens":
+            # 1) Insert Telegram event from 0 → first subtitle start
+            if subs.events:
+                first_start = subs.events[0].start
+            else:
+                first_start = 0
+            telegram_event = pysubs2.SSAEvent(
+                start=0,
+                end=first_start,
+                style=styles[0].name,
+                text="Telegram :- Facky_Hindi_Donghua"
+            )
+            subs.events.insert(0, telegram_event)
+
+            # 2) Apply the Shrouding style to every other line
+            for line in subs.events[1:]:
+                line.style = styles[0].name
+
         else:
-            # e.g. Shrouding The heavens – just apply that single style
+            # Fallback for any future styles: just apply the first style
             for line in subs.events:
                 line.style = styles[0].name
 
