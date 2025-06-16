@@ -3,11 +3,8 @@ import os
 import tempfile
 import logging
 
-
-
 from flask import Flask, request, abort
 from dotenv import load_dotenv
-
 import pysubs2
 
 from telegram import Bot, Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -19,7 +16,7 @@ from telegram.ext import (
     CallbackQueryHandler,
 )
 
-from styles import STYLES  # <-- pull in your theme registry
+from styles import STYLES  # <-- your theme registry
 
 # Load env – Koyeb injects BOT_TOKEN & WEBHOOK_URL
 load_dotenv()
@@ -52,8 +49,7 @@ def webhook():
     return "", 200
 
 # ─── In-memory store of each chat's chosen theme ──────────────────
-# Defaults to "Pikasub" if never set
-user_selected_theme = {}
+user_selected_theme = {}  # defaults to "Pikasub" if never set
 
 # ─── /setting command to pick your theme ─────────────────────────
 def settings_command(update, context):
@@ -100,19 +96,20 @@ def handle_document(update, context):
         subs.info["PlayResX"] = "1920"
         subs.info["PlayResY"] = "1080"
 
-        # Figure out which theme this chat has chosen (default=Pikasub)
+        # Figure out which theme this chat has chosen
         chat_id = update.message.chat_id
         theme   = user_selected_theme.get(chat_id, "Pikasub")
         styles  = STYLES.get(theme, [])
 
-        # Register each style for this theme
+        # Register each style under its .name
         for style in styles:
             subs.styles[style.name] = style
 
-        # Theme-specific logic
+        # ─── Theme‐specific logic ─────────────────────────────────────
         if theme == "Pikasub":
-            # 1) Prepend your site event (0→5min)
-            site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
+            # 1) Prepend your “site” event (0→5min)
+            site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733"\
+                       r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
             start_ms = 0
             end_ms   = 5 * 60 * 1000
             site_event = pysubs2.SSAEvent(
@@ -123,11 +120,9 @@ def handle_document(update, context):
             )
             subs.events.insert(0, site_event)
 
-            # 2) Apply Default + semi-transparent tag to the rest
-            alpha_tag = r"{\4a&H96&}"
+            # 2) Apply Default to the rest
             for line in subs.events[1:]:
                 line.style = "Default"
-                line.text  = alpha_tag + line.text
 
         elif theme == "Shrouding The heavens":
             # 1) Insert Telegram event from 0 → first subtitle start
@@ -148,16 +143,15 @@ def handle_document(update, context):
                 line.style = styles[0].name
 
         else:
-            # Fallback for any future styles: just apply the first style
+            # Fallback: just apply the first style to all lines
             for line in subs.events:
                 line.style = styles[0].name
 
-        
+        # ─── Now apply semi-transparent tag to *all* lines ────────────
         alpha_tag = r"{\4a&H96&}"
-        for line in subs.events[1:]:
-            line.text  = alpha_tag + line.text
+        for line in subs.events:
+            line.text = alpha_tag + line.text
 
-        
         # Save out to .ass
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ass") as tmp_out:
             out_path = tmp_out.name
