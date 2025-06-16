@@ -1,6 +1,6 @@
 import pysubs2
 
-# Build a clean SSAStyle and then override its fields:
+# ─── DefaultStyle ─────────────────────────────────────────────────
 DefaultStyle = pysubs2.SSAStyle()
 
 # ─── Font & Size ───────────────────────────────────────
@@ -11,11 +11,7 @@ DefaultStyle.fontsize       = 78
 DefaultStyle.primarycolour   = "&H00FFFFFF"  # white fill (AA=00 → opaque)
 DefaultStyle.secondarycolour = "&H000000FF"  # red outline (AA=00 → opaque)
 DefaultStyle.outlinecolour   = "&H00000000"  # black border (AA=00 → opaque)
-
-# Here’s your semi-transparent shadow/backcolour:
-#   Alpha=150 dec → 0x96 hex,
-#   so &H96000000 means 150/255 transparency
-DefaultStyle.backcolour      = "&H96000000"
+DefaultStyle.backcolour      = "&H96000000"  # semi-transparent black shadow
 
 # ─── Style Flags ───────────────────────────────────────
 DefaultStyle.bold        = False
@@ -34,8 +30,8 @@ DefaultStyle.spacing     = 0.0
 DefaultStyle.angle       = 0.0
 
 # ─── Border Style & Alignment ─────────────────────────
-DefaultStyle.border_style = 1    # 1 = outline + drop-shadow
-DefaultStyle.alignment    = 2    # 2 = bottom-center
+DefaultStyle.border_style = 1    # outline + drop-shadow
+DefaultStyle.alignment    = 2    # bottom-center
 
 # ─── Margins (Left, Right, Vertical) ──────────────────
 DefaultStyle.marginl     = 60
@@ -43,11 +39,10 @@ DefaultStyle.marginr     = 60
 DefaultStyle.marginv     = 65
 
 # ─── Encoding ─────────────────────────────────────────
-DefaultStyle.encoding    = 1    # 1 = ANSI
+DefaultStyle.encoding    = 1    # ANSI
 
-# (Everything else inherits pysubs2’s defaults.)
 
-# — new “site” style based on your TwCEN screenshot —
+# ─── SiteStyle ───────────────────────────────────────────────────
 SiteStyle = pysubs2.SSAStyle()
 
 SiteStyle.fontname        = "Tw Cen MT Condensed Extra Bold"
@@ -55,7 +50,7 @@ SiteStyle.fontsize        = 36
 SiteStyle.primarycolour   = "&H00FFFFFF"   # white fill
 SiteStyle.secondarycolour = "&H000000FF"   # red outline
 SiteStyle.outlinecolour   = "&H00000000"   # black border
-SiteStyle.backcolour      = "&H00000000"   # black shadow (we'll use override alpha)
+SiteStyle.backcolour      = "&H00000000"   # black shadow
 
 SiteStyle.bold       = False
 SiteStyle.italic     = False
@@ -78,3 +73,44 @@ SiteStyle.marginr    = 15
 SiteStyle.marginv    = 11
 
 SiteStyle.encoding   = 1        # ANSI
+
+
+# ─── Shrouding The heavens ─────────────────────────────────────────
+ShroudingTheHeavens = pysubs2.SSAStyle()
+ShroudingTheHeavens.name            = "Shrouding The heavens"
+
+# Font & Size
+ShroudingTheHeavens.fontname        = "Arial Rounded MT Bold"
+ShroudingTheHeavens.fontsize        = 67
+ShroudingTheHeavens.bold            = True
+ShroudingTheHeavens.italic          = False
+ShroudingTheHeavens.underline       = False
+ShroudingTheHeavens.strikeout       = False
+
+# Colours
+ShroudingTheHeavens.primarycolour   = "&H00FFFFFF"  # white
+ShroudingTheHeavens.secondarycolour = "&H000000FF"  # red
+ShroudingTheHeavens.outlinecolour   = "&H00000000"  # black
+ShroudingTheHeavens.shadowcolour    = "&H00FF0000"  # blue
+
+# Outline & Shadow
+ShroudingTheHeavens.outline         = 3.0
+ShroudingTheHeavens.shadow          = 3.7
+
+# Scaling, Spacing, Rotation
+ShroudingTheHeavens.scalex          = 87
+ShroudingTheHeavens.scaley          = 108
+ShroudingTheHeavens.spacing         = 0.0
+ShroudingTheHeavens.angle           = 0.0
+
+# Border Style & Alignment
+ShroudingTheHeavens.border_style    = 1     # outline + drop-shadow
+ShroudingTheHeavens.alignment       = 2     # bottom-center
+
+# Margins
+ShroudingTheHeavens.marginl         = 10
+ShroudingTheHeavens.marginr         = 10
+ShroudingTheHeavens.marginv         = 125
+
+# Encoding
+ShroudingTheHeavens.encoding        = 1     # ANSI
