@@ -124,29 +124,29 @@ def handle_document(update, context):
             for line in subs.events[1:]:
                 line.style = "Default"
 
-    elif theme == "Shrouding The heavens":
-        # 1) Find a non-zero start time
-        first_start = None
-        for ev in subs.events:
-            if ev.start > 0:
-                first_start = ev.start
-                break
-        # fallback to 5 seconds if everything else starts at 0
-        if first_start is None:
-            first_start = 5 * 1000
+        elif theme == "Shrouding The heavens":
+            # 1) Find a non-zero start time
+            first_start = None
+            for ev in subs.events:
+                if ev.start > 0:
+                    first_start = ev.start
+                    break
+            # fallback to 5 seconds if everything else starts at 0
+            if first_start is None:
+                first_start = 5 * 1000
 
-        # 2) Insert your Telegram event
-        telegram_event = pysubs2.SSAEvent(
-            start=0,
-            end=first_start,
-            style=styles[0].name,
-            text="Telegram :- Facky_Hindi_Donghua"
-        )
-        subs.events.insert(0, telegram_event)
+            # 2) Insert your Telegram event
+            telegram_event = pysubs2.SSAEvent(
+                start=0,
+                end=first_start,
+                style=styles[0].name,
+                text="Telegram :- Facky_Hindi_Donghua"
+            )
+            subs.events.insert(0, telegram_event)
 
-        # 3) Apply the Shrouding style to all other lines
-        for line in subs.events[1:]:
-            line.style = styles[0].name
+            # 3) Apply the Shrouding style to all other lines
+            for line in subs.events[1:]:
+                line.style = styles[0].name
 
         else:
             # Fallback: just apply the first style to all lines
