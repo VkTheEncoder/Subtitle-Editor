@@ -126,24 +126,17 @@ def handle_document(update, context):
 
         elif theme == "Shrouding The heavens":
             # 1) Find a non-zero start time
-            first_start = None
-            for ev in subs.events:
-                if ev.start > 0:
-                    first_start = ev.start
-                    break
-            # fallback to 5 seconds if everything else starts at 0
-            if first_start is None:
-                first_start = 5 * 1000
-
-            # 2) Insert your Telegram event
-            telegram_event = pysubs2.SSAEvent(
-                start=0,
-                end=first_start,
-                style=styles[0].name,
-                text="Telegram :- Facky_Hindi_Donghua"
+            site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733"\
+                       r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
+            start_ms = 0
+            end_ms   = 5 * 60 * 1000
+            site_event = pysubs2.SSAEvent(
+                start=start_ms,
+                end=end_ms,
+                style="site",
+                text=site_tag + "fackyhindidonghua.in"
             )
-            subs.events.insert(0, telegram_event)
-
+            subs.events.insert(0, site_event)
             # 3) Apply the Shrouding style to all other lines
             for line in subs.events[1:]:
                 line.style = styles[0].name
