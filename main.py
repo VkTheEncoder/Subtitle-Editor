@@ -134,6 +134,12 @@ def handle_document(update, context):
             for line in subs.events:
                 line.style = styles[0].name
 
+        
+        alpha_tag = r"{\4a&H96&}"
+        for line in subs.events[1:]:
+            line.text  = alpha_tag + line.text
+
+        
         # Save out to .ass
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ass") as tmp_out:
             out_path = tmp_out.name
