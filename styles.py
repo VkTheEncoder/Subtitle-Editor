@@ -4,7 +4,7 @@ import pysubs2
 DefaultStyle = pysubs2.SSAStyle()
 
 # ─── Font & Size ───────────────────────────────────────
-DefaultStyle.name           = "Pikasub"
+DefaultStyle.name           = "Default"
 DefaultStyle.fontname       = "HelveticaRounded LT Std BdCn"
 DefaultStyle.fontsize       = 78
 
@@ -46,8 +46,7 @@ DefaultStyle.encoding    = 1    # ANSI
 # ─── SiteStyle ───────────────────────────────────────────────────
 SiteStyle = pysubs2.SSAStyle()
 
-
-SiteStyle.name            = "Pikasub"
+SiteStyle.name            = "site"
 SiteStyle.fontname        = "Tw Cen MT Condensed Extra Bold"
 SiteStyle.fontsize        = 36
 SiteStyle.primarycolour   = "&H00FFFFFF"   # white fill
