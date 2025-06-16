@@ -3,6 +3,9 @@ import os
 import tempfile
 import logging
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask, request, abort
 from dotenv import load_dotenv
 import pysubs2
