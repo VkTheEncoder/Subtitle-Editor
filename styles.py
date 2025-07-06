@@ -37,7 +37,7 @@ DefaultStyle.alignment    = 2    # bottom-center
 # ─── Margins (Left, Right, Vertical) ──────────────────
 DefaultStyle.marginl     = 60
 DefaultStyle.marginr     = 60
-DefaultStyle.marginv     = 65
+DefaultStyle.marginv     = 95
 
 # ─── Encoding ─────────────────────────────────────────
 DefaultStyle.encoding    = 1    # ANSI
