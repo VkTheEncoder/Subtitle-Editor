@@ -116,7 +116,7 @@ def handle_document(update, context):
                 start=start_ms,
                 end=end_ms,
                 style="site",
-                text=site_tag + "HindiSubbing.com"
+                text=site_tag + "PikaSub.com"
             )
             subs.events.insert(0, site_event)
 
