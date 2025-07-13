@@ -143,7 +143,7 @@ def handle_document(update, context):
 
             # 2) Apply Default to the rest
             for line in subs.events[1:]:
-                line.style = "Default"
+                line.style = "Pika 480p"
 
         elif theme == "Shrouding The Heavens":
             # 1) Insert Telegram event from 0 → first subtitle start
