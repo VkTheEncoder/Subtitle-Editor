@@ -92,6 +92,10 @@ def handle_document(update, context):
         # Load subtitles
         subs = pysubs2.load(in_path)
 
+        # ─── figure out which theme this chat has chosen ───────────────
+        chat_id = update.message.chat_id
+        theme   = user_selected_theme.get(chat_id, "Pikasub")
+        styles  = STYLES.get(theme, [])
         # Force 1920×1080 resolution
         if theme == "Pika 480p":
             subs.info["PlayResX"] = "854"
