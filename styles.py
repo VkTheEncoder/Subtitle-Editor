@@ -117,7 +117,41 @@ ShroudingTheHeavens.marginv         = 125
 # Encoding
 ShroudingTheHeavens.encoding        = 1     # ANSI
 
+# ─── Pika 480p ────────────────────────────────────────────────────
+Pika480p = pysubs2.SSAStyle()
+Pika480p.name           = "Pika 480p"
+Pika480p.fontname       = "HelveticaRounded LT Std BdCn"
+Pika480p.fontsize       = 36
+
+Pika480p.primarycolour   = "&H00FFFFFF"  # white fill
+Pika480p.secondarycolour = "&H000000FF"  # red outline
+Pika480p.outlinecolour   = "&H00000000"  # black border
+Pika480p.backcolour      = "&H00000000"  # no opaque box
+
+Pika480p.bold        = False
+Pika480p.italic      = False
+Pika480p.underline   = False
+Pika480p.strikeout   = False
+
+Pika480p.outline     = 1.1
+Pika480p.shadow      = 2.1
+
+Pika480p.scalex      = 100
+Pika480p.scaley      = 100
+Pika480p.spacing     = 0.0
+Pika480p.angle       = 0.0
+
+Pika480p.border_style = 1   # outline + shadow
+Pika480p.alignment    = 2   # bottom-center
+
+Pika480p.marginl     = 60
+Pika480p.marginr     = 60
+Pika480p.marginv     = 45
+
+Pika480p.encoding    = 1    # ANSI
+
 STYLES = {
     "Pikasub":               [DefaultStyle, SiteStyle],
     "Shrouding The Heavens": [ShroudingTheHeavens],
+    "Pika 480p":             [Pika480p, SiteStyle],
 }
