@@ -93,20 +93,37 @@ def handle_document(update, context):
         subs = pysubs2.load(in_path)
 
         # Force 1920×1080 resolution
-        subs.info["PlayResX"] = "1920"
-        subs.info["PlayResY"] = "1080"
-
-        # Figure out which theme this chat has chosen
-        chat_id = update.message.chat_id
-        theme   = user_selected_theme.get(chat_id, "Pikasub")
-        styles  = STYLES.get(theme, [])
-
+        if theme == "Pika 480p":
+            subs.info["PlayResX"] = "854"
+            subs.info["PlayResY"] = "480"
+        else:
+            subs.info["PlayResX"] = "1920"
+            subs.info["PlayResY"] = "1080"
+            
         # Register each style under its .name
         for style in styles:
             subs.styles[style.name] = style
 
         # ─── Theme‐specific logic ─────────────────────────────────────
         if theme == "Pikasub":
+            # 1) Prepend your “site” event (0→5min)
+            site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733"\
+                       r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
+            start_ms = 0
+            end_ms   = 5 * 60 * 1000
+            site_event = pysubs2.SSAEvent(
+                start=start_ms,
+                end=end_ms,
+                style="site",
+                text=site_tag + "PikaSub.com"
+            )
+            subs.events.insert(0, site_event)
+
+            # 2) Apply Default to the rest
+            for line in subs.events[1:]:
+                line.style = "Default"
+
+            elif theme == "Pika 480p":
             # 1) Prepend your “site” event (0→5min)
             site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733"\
                        r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
