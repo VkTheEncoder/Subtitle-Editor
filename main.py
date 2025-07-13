@@ -123,7 +123,7 @@ def handle_document(update, context):
             for line in subs.events[1:]:
                 line.style = "Default"
 
-            elif theme == "Pika 480p":
+        elif theme == "Pika 480p":
             # 1) Prepend your “site” event (0→5min)
             site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733"\
                        r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
