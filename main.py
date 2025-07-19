@@ -98,7 +98,7 @@ def handle_document(update, context):
         styles  = STYLES.get(theme, [])
         # Force 1920×1080 resolution
         if theme == "Pika 480p":
-            subs.info["PlayResX"] = "854"
+            subs.info["PlayResX"] = "640"
             subs.info["PlayResY"] = "480"
         else:
             subs.info["PlayResX"] = "1920"
@@ -129,7 +129,7 @@ def handle_document(update, context):
 
         elif theme == "Pika 480p":
             # 1) Prepend your “site” event (0→5min)
-            site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733"\
+            site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs15.733"\
                        r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
             start_ms = 0
             end_ms   = 5 * 60 * 1000
