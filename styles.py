@@ -70,9 +70,9 @@ SiteStyle.angle      = 0.0
 SiteStyle.border_style = 1       # outline + drop-shadow
 SiteStyle.alignment    = 5       # bottom-center
 
-SiteStyle.marginl    = 15
+SiteStyle.marginl    = 9
 SiteStyle.marginr    = 15
-SiteStyle.marginv    = 11
+SiteStyle.marginv    = 5
 
 SiteStyle.encoding   = 1        # ANSI
 
