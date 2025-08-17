@@ -150,8 +150,51 @@ Pika480p.marginv     = 45
 
 Pika480p.encoding    = 1    # ANSI
 
+
+# ─── Tales Of Herding Gods ─────────────────────────────────────────
+TalesOfHerdingGods = pysubs2.SSAStyle()
+TalesOfHerdingGods.name            = "Tales Of Herding Gods"
+
+# Font & Size (from your screenshot)
+TalesOfHerdingGods.fontname        = "Arial Rounded MT Bold"
+TalesOfHerdingGods.fontsize        = 62
+TalesOfHerdingGods.bold            = True
+TalesOfHerdingGods.italic          = False
+TalesOfHerdingGods.underline       = False
+TalesOfHerdingGods.strikeout       = False
+
+# Colours
+TalesOfHerdingGods.primarycolour   = "&H00FFFFFF"  # white
+TalesOfHerdingGods.secondarycolour = "&H000000FF"  # red
+TalesOfHerdingGods.outlinecolour   = "&H00000000"  # black
+TalesOfHerdingGods.backcolour      = "&H00000000"  # black shadow
+
+# Outline & Shadow (same feel as shrouding)
+TalesOfHerdingGods.outline         = 3.1
+TalesOfHerdingGods.shadow          = 3.8
+
+# Scaling / spacing / rotation (from screenshot)
+TalesOfHerdingGods.scalex          = 87
+TalesOfHerdingGods.scaley          = 108
+TalesOfHerdingGods.spacing         = 0.0
+TalesOfHerdingGods.angle           = 0.0
+
+# Border & placement
+TalesOfHerdingGods.border_style    = 1     # outline + drop-shadow
+TalesOfHerdingGods.alignment       = 2     # bottom-center
+
+# Margins (from screenshot)
+TalesOfHerdingGods.marginl         = 10
+TalesOfHerdingGods.marginr         = 10
+TalesOfHerdingGods.marginv         = 137
+
+# Encoding
+TalesOfHerdingGods.encoding        = 1     # ANSI
+
+
 STYLES = {
     "Pikasub":               [DefaultStyle, SiteStyle],
     "Shrouding The Heavens": [ShroudingTheHeavens],
+    "Tales Of Herding Gods": [TalesOfHerdingGods],  
     "Pika 480p":             [Pika480p, SiteStyle],
 }
