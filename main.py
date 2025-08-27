@@ -109,7 +109,7 @@ def handle_document(update, context):
             subs.styles[style.name] = style
 
         # ─── Theme‐specific logic ─────────────────────────────────────
-        if theme == "Pikasub":
+        if theme == "Pika 1080p":
             # 1) Prepend your “site” event (0→5min)
             site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs31.733"\
                        r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
@@ -149,6 +149,48 @@ def handle_document(update, context):
             for line in subs.events[3:]:
                 line.style = "Default"
 
+
+        if theme == "Pika 720p":
+            # 1) Prepend your “site” event (0→5min)
+            site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs25.733"\
+                       r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
+            start_ms = 0
+            end_ms   = 5 * 60 * 1000
+            site_event = pysubs2.SSAEvent(
+                start=start_ms,
+                end=end_ms,
+                style="site",
+                text=site_tag + "PikaSub.com"
+            )
+            subs.events.insert(0, site_event)
+
+            Telegram_title = r"{\an8}Hindi Translation by: PikaSub.com\NTelegram Channel: @PikaSub"
+            start_ms = 0
+            end_ms   = 10 * 1000
+            Tele_event = pysubs2.SSAEvent(
+                start=start_ms,
+                end=end_ms,
+                style="Default",
+                text=Telegram_title
+            )
+            subs.events.insert(0, Tele_event)
+
+            Middle_title = r"{\fad(0,2000)\move(2505.6,52.5,-750.9,53.1)\fs32\c&H00F0FF&\1a&H00&\b1}{\fscy100\fnCorbel\shad2.5}For more Animes in Hindi Sub join our Telegram Channel: @PikaSub"
+            start_ms = 180000
+            end_ms   = 200000
+            Middle_event = pysubs2.SSAEvent(
+                start=start_ms,
+                end=end_ms,
+                style="site",
+                text=Middle_title
+            )
+            subs.events.insert(0, Middle_event)
+
+            # 2) Apply Default to the rest
+            for line in subs.events[3:]:
+                line.style = "Default"
+
+        
         elif theme == "Pika 480p":
             # 1) Prepend your “site” event (0→5min)
             site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs15.733"\
