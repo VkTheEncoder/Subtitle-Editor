@@ -239,7 +239,7 @@ TalesOfHerdingGods.encoding        = 1     # ANSI
 STYLES = {
     "Pika 1080p":            [DefaultStyle, SiteStyle],
     "Pika 720p":             [Pika720, SiteStyle],
+    "Pika 480p":             [Pika480p, SiteStyle],
     "Shrouding The Heavens": [ShroudingTheHeavens],
     "Tales Of Herding Gods": [TalesOfHerdingGods],  
-    "Pika 480p":             [Pika480p, SiteStyle],
 }
