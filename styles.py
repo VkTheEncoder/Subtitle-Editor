@@ -43,6 +43,50 @@ DefaultStyle.marginv     = 95
 DefaultStyle.encoding    = 1    # ANSI
 
 
+# ─── Pika720 ─────────────────────────────────────────────────
+Pika720 = pysubs2.SSAStyle()
+
+# ─── Font & Size ───────────────────────────────────────
+Pika720.name           = "Default"
+Pika720.fontname       = "HelveticaRounded LT Std BdCn"
+Pika720.fontsize       = 52
+
+# ─── Colours (ASS uses &HAABBGGRR; AA = alpha) ────────
+Pika720.primarycolour   = "&H00FFFFFF"  # white fill (AA=00 → opaque)
+Pika720.secondarycolour = "&H000000FF"  # red outline (AA=00 → opaque)
+Pika720.outlinecolour   = "&H00000000"  # black border (AA=00 → opaque)
+Pika720.backcolour      = "&H96000000"  # semi-transparent black shadow
+
+# ─── Style Flags ───────────────────────────────────────
+Pika720.bold        = False
+Pika720.italic      = False
+Pika720.underline   = False
+Pika720.strikeout   = False
+
+# ─── Outline & Shadow Thickness ───────────────────────
+Pika720.outline     = 1.9
+Pika720.shadow      = 3.1
+
+# ─── Scaling, Spacing, Rotation ───────────────────────
+Pika720.scalex      = 100
+Pika720.scaley      = 100
+Pika720.spacing     = 0.0
+Pika720.angle       = 0.0
+
+# ─── Border Style & Alignment ─────────────────────────
+Pika720.border_style = 1    # outline + drop-shadow
+Pika720.alignment    = 2    # bottom-center
+
+# ─── Margins (Left, Right, Vertical) ──────────────────
+Pika720.marginl     = 60
+Pika720.marginr     = 60
+Pika720.marginv     = 65
+
+# ─── Encoding ─────────────────────────────────────────
+Pika720.encoding    = 1    # ANSI
+
+
+
 # ─── SiteStyle ───────────────────────────────────────────────────
 SiteStyle = pysubs2.SSAStyle()
 
@@ -193,7 +237,8 @@ TalesOfHerdingGods.encoding        = 1     # ANSI
 
 
 STYLES = {
-    "Pikasub":               [DefaultStyle, SiteStyle],
+    "Pika 1080p":            [DefaultStyle, SiteStyle],
+    "Pika 720p":             [Pika720, SiteStyle],
     "Shrouding The Heavens": [ShroudingTheHeavens],
     "Tales Of Herding Gods": [TalesOfHerdingGods],  
     "Pika 480p":             [Pika480p, SiteStyle],
