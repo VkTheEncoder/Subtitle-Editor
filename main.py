@@ -51,6 +51,35 @@ def webhook():
 # ─── In-memory store of each chat's chosen theme ──────────────────
 user_selected_theme = {}  # defaults to "Pikasub" if never set
 
+
+
+def start_command(update, context):
+    text = (
+        "Hey! I’m your Subtitle Stylist 🎬✨\n\n"
+        "What I do:\n"
+        "• Convert .srt / .vtt → styled .ass\n"
+        "• Ready-made themes: Pika 1080p / 720p / 480p, Shrouding The Heavens, Tales Of Herding Gods\n"
+        "• Auto title cards & soft watermark (theme-specific)\n\n"
+        "How to use:\n"
+        "1) Send me a .srt or .vtt file\n"
+        "2) Choose your style via /setting\n"
+        "3) I’ll return the .ass file—ready to mux\n\n"
+        "Tips:\n"
+        "• Use /setting anytime to switch styles\n"
+        "• If something fails, just resend the file\n\n"
+        "Ready when you are. Drop your subtitle file now ⬇️"
+        "📩 Contact @THe_vK_3 if any problem or Query"
+    )
+    update.message.reply_text(text)
+
+def help_command(update, context):
+    update.message.reply_text(
+        "Need help?\n\n"
+        "• Use /setting to pick a theme\n"
+        "• Send .srt or .vtt files only\n"
+        "• I’ll return a themed .ass file\n"
+    )
+
 # ─── /setting command to pick your theme ─────────────────────────
 def settings_command(update, context):
     keyboard = [
@@ -285,6 +314,8 @@ def handle_document(update, context):
                 except: pass
 
 # ─── Register handlers ─────────────────────────────────────────────
+dp.add_handler(CommandHandler("start", start_command))
+dp.add_handler(CommandHandler("help", help_command))
 dp.add_handler(CommandHandler("setting", settings_command))
 dp.add_handler(CallbackQueryHandler(theme_callback, pattern=r"^set_theme\|"))
 dp.add_handler(MessageHandler(Filters.document, handle_document))
