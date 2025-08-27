@@ -126,7 +126,7 @@ def handle_document(update, context):
             Telegram_title = r"{\an8}Hindi Translation by: PikaSub.com\NTelegram Channel: @PikaSub"
             start_ms = 0
             end_ms   = 10 * 1000
-            tele_event = pysubs2.SSAEvent(
+            Tele_event = pysubs2.SSAEvent(
                 start=start_ms,
                 end=end_ms,
                 style="Default",
