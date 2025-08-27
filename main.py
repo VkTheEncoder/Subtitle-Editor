@@ -100,6 +100,11 @@ def handle_document(update, context):
         if theme == "Pika 480p":
             subs.info["PlayResX"] = "640"
             subs.info["PlayResY"] = "480"
+
+        elif theme == "Pika 720p":
+            subs.info["PlayResX"] = "1280"
+            subs.info["PlayResY"] = "720"
+             
         else:
             subs.info["PlayResX"] = "1920"
             subs.info["PlayResY"] = "1080"
@@ -150,7 +155,7 @@ def handle_document(update, context):
                 line.style = "Default"
 
 
-        if theme == "Pika 720p":
+        elif theme == "Pika 720p":
             # 1) Prepend your “site” event (0→5min)
             site_tag = r"{\fad(4000,3000)\fn@Arial Unicode MS\fs25.733"\
                        r"\c&H00FFFFFF&\alpha&H99&\b1\a1\fscy60}"
