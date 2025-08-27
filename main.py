@@ -146,7 +146,7 @@ def handle_document(update, context):
             subs.events.insert(0, Middle_event)
 
             # 2) Apply Default to the rest
-            for line in subs.events[1:]:
+            for line in subs.events[3:]:
                 line.style = "Default"
 
         elif theme == "Pika 480p":
