@@ -236,10 +236,53 @@ TalesOfHerdingGods.marginv         = 137
 TalesOfHerdingGods.encoding        = 1     # ANSI
 
 
+# ─── Big Brother ────────────────────────────────────────────────
+BigBrother = pysubs2.SSAStyle()
+BigBrother.name            = "Big Brother"
+
+# Font & Size (from screenshot)
+BigBrother.fontname        = "Arial Rounded MT Bold"
+BigBrother.fontsize        = 62
+BigBrother.bold            = True
+BigBrother.italic          = False
+BigBrother.underline       = False
+BigBrother.strikeout       = False
+
+# Colors (Primary white, Secondary red, Outline black, Shadow black)
+BigBrother.primarycolour   = "&H00FFFFFF"   # white
+BigBrother.secondarycolour = "&H000000FF"   # red
+BigBrother.outlinecolour   = "&H00000000"   # black
+BigBrother.backcolour      = "&H00000000"   # black shadow
+
+# Outline & Shadow (from screenshot)
+BigBrother.outline         = 3.1
+BigBrother.shadow          = 3.0
+
+# Scaling / Spacing / Rotation (from screenshot)
+BigBrother.scalex          = 87
+BigBrother.scaley          = 108
+BigBrother.spacing         = 0.0
+BigBrother.angle           = 0.0
+
+# Border & Placement (same scheme as Tales Of Herding Gods)
+BigBrother.border_style    = 1              # outline + drop-shadow
+BigBrother.alignment       = 2              # bottom-center
+
+# Margins (from screenshot)
+BigBrother.marginl         = 10
+BigBrother.marginr         = 10
+BigBrother.marginv         = 114
+
+# Encoding
+BigBrother.encoding        = 1              # ANSI
+
+
+
 STYLES = {
     "Pika 1080p":            [DefaultStyle, SiteStyle],
     "Pika 720p":             [Pika720, SiteStyle],
     "Pika 480p":             [Pika480p, SiteStyle],
     "Shrouding The Heavens": [ShroudingTheHeavens],
     "Tales Of Herding Gods": [TalesOfHerdingGods],  
+    "Big Brother":           [BigBrother],
 }
