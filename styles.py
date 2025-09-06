@@ -277,6 +277,46 @@ BigBrother.marginv         = 114
 BigBrother.encoding        = 1              # ANSI
 
 
+# ─── Immortal Doctor ────────────────────────────────────────────────
+ImmortalDoctor = pysubs2.SSAStyle()
+ImmortalDoctor.name            = "Immortal Doctor"
+
+# Font & Size
+ImmortalDoctor.fontname        = "Arial Rounded MT Bold"
+ImmortalDoctor.fontsize        = 53
+ImmortalDoctor.bold            = True
+ImmortalDoctor.italic          = False
+ImmortalDoctor.underline       = False
+ImmortalDoctor.strikeout       = False
+
+# Colors
+ImmortalDoctor.primarycolour   = "&H00FFFFFF"   # white
+ImmortalDoctor.secondarycolour = "&H000000FF"   # red
+ImmortalDoctor.outlinecolour   = "&H00000000"   # black
+ImmortalDoctor.backcolour      = "&H00000000"   # black shadow
+
+# Outline & Shadow
+ImmortalDoctor.outline         = 2.0
+ImmortalDoctor.shadow          = 2.9
+
+# Scaling / Spacing / Rotation
+ImmortalDoctor.scalex          = 87
+ImmortalDoctor.scaley          = 108
+ImmortalDoctor.spacing         = 0.0
+ImmortalDoctor.angle           = 0.0
+
+# Border & Placement
+ImmortalDoctor.border_style    = 1
+ImmortalDoctor.alignment       = 2      # bottom-center
+
+# Margins
+ImmortalDoctor.marginl         = 10
+ImmortalDoctor.marginr         = 10
+ImmortalDoctor.marginv         = 100
+
+# Encoding
+ImmortalDoctor.encoding        = 1
+
 
 STYLES = {
     "Pika 1080p":            [DefaultStyle, SiteStyle],
@@ -285,4 +325,5 @@ STYLES = {
     "Shrouding The Heavens": [ShroudingTheHeavens],
     "Tales Of Herding Gods": [TalesOfHerdingGods],  
     "Big Brother":           [BigBrother],
+    "Immortal Doctor":       [ImmortalDoctor], 
 }
