@@ -336,7 +336,7 @@ def handle_document(update, context):
                 line.style = styles[0].name
 
         # ─── Now apply semi-transparent tag to *all* lines ────────────
-        alpha_tag = r"{\4a&H96&}"
+        alpha_tag = r"{\4a&H50&}"
         for line in subs.events:
             line.text = alpha_tag + line.text
 
