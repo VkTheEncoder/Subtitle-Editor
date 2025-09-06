@@ -133,6 +133,10 @@ def handle_document(update, context):
         elif theme == "Pika 720p":
             subs.info["PlayResX"] = "1280"
             subs.info["PlayResY"] = "720"
+
+        elif theme == "Immortal Doctor":
+            subs.info["PlayResX"] = "1920"
+            subs.info["PlayResY"] = "800"
              
         else:
             subs.info["PlayResX"] = "1920"
@@ -299,6 +303,30 @@ def handle_document(update, context):
             subs.events.insert(0, telegram_event)
 
             # 2) Apply the Shrouding style to every other line
+            for line in subs.events[1:]:
+                line.style = styles[0].name
+
+        elif theme == "Immortal Doctor":
+            # (a) Delete the first TWO subtitle lines if present
+            for _ in range(2):
+                if subs.events:
+                    subs.events.pop(0)
+        
+            # (b) Insert the same “title/telegram” line behavior used in Tales
+            if subs.events:
+                first_start = subs.events[0].start
+            else:
+                first_start = 0
+        
+            telegram_event = pysubs2.SSAEvent(
+                start=0,
+                end=first_start,
+                style=styles[0].name,                   # use Immortal Doctor style
+                text="Telegram :- Facky_Hindi_Donghua"  # same as Tales title line
+            )
+            subs.events.insert(0, telegram_event)
+        
+            # (c) Apply this style to every remaining line (same as Tales)
             for line in subs.events[1:]:
                 line.style = styles[0].name
 
