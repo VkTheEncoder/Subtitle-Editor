@@ -308,7 +308,7 @@ def handle_document(update, context):
 
         elif theme == "Immortal Doctor":
             # (a) Delete the first TWO subtitle lines if present
-            for _ in range(2):
+            for _ in range(3):
                 if subs.events:
                     subs.events.pop(0)
         
